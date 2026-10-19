@@ -1,11 +1,30 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="副屏仪表盘">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#11151c" id="themeColor">
+<meta name="description" content="时钟、紧凑月历、倒数日、正数日、任务与番茄钟，适合副屏和 Safari 全屏展示。">
 <title>副屏仪表盘</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+(function () {
+  try {
+    var t = JSON.parse(localStorage.getItem('dash:theme:v1'));
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* Layout: landscape iPad 9.7" (1024x768). Left: clock over month calendar. Right: tasks over pomodoro. Stacks to one column on phones. */
+[hidden] { display: none !important; }
+
+/* A compact date column and a larger focus workspace, tuned for landscape tablets. */
 :root {
   --bg: #11151c;
   --panel: #1a202b;
@@ -54,14 +73,16 @@
 }
 
 * { box-sizing: border-box; margin: 0; }
-html, body { height: 100%; }
+html { height: 100%; }
+body { min-height: 100%; height: 100vh; height: 100dvh; }
 body {
   background: var(--bg);
   color: var(--fg);
   font: 400 15px/1.45 var(--f-body);
-  padding-block: 16px;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: max(12px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(12px, env(safe-area-inset-left, 0px));
+  padding-right: max(12px, env(safe-area-inset-right, 0px));
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
 }
@@ -70,18 +91,31 @@ button:disabled { cursor: default; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 ul { list-style: none; padding: 0; }
 
+.app { height: 100%; max-width: 1800px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.topbar { display: flex; flex: none; min-height: 44px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 3px; }
+.brand { display: flex; align-items: center; gap: 10px; font-size: 14px; letter-spacing: .12em; font-weight: 700; }
+.brand-mark { width: 9px; height: 9px; border-radius: 50%; background: var(--focus); box-shadow: 0 0 0 5px var(--panel-2); margin: 0 4px; }
+.top-actions { display: flex; gap: 8px; }
+.tool-btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 0 13px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--fg-2); font-size: 13px; font-weight: 500; }
+.tool-btn:hover { color: var(--fg); background: var(--panel-2); }
+.tool-btn:disabled { opacity: .65; }
+.tool-btn svg { width: 16px; height: 16px; flex: none; }
 .dash {
-  height: 100%;
-  display: grid;
-  gap: 16px;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: auto minmax(120px, 1fr) auto;
-  grid-template-areas:
-    "clock tasks"
-    "cal   tasks"
-    "cal   pomo";
+  flex: 1; min-height: 0;
+  display: grid; gap: 12px;
+  grid-template-columns: minmax(300px, .92fr) minmax(0, 1.48fr);
+  grid-template-rows: minmax(0, 1fr);
 }
-.clock { grid-area: clock; min-width: 0; padding: 2px 4px 0; }
+.date-column, .focus-column { display: grid; min-width: 0; min-height: 0; gap: 12px; }
+.date-column {
+  grid-template-rows: minmax(154px, .8fr) minmax(208px, 1fr) minmax(196px, .9fr);
+  grid-template-areas: "clock" "cal" "milestones";
+}
+.focus-column {
+  grid-template-rows: minmax(320px, 1.03fr) minmax(310px, 1fr);
+  grid-template-areas: "pomo" "tasks";
+}
+.clock { grid-area: clock; min-width: 0; align-self: center; padding: 2px 8px 0; }
 .cal   { grid-area: cal; }
 .tasks { grid-area: tasks; }
 .pomo  { grid-area: pomo; }
@@ -90,7 +124,7 @@ ul { list-style: none; padding: 0; }
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 16px;
-  padding: 16px 18px;
+  padding: 14px 16px;
   min-width: 0;
   min-height: 0;
 }
@@ -101,14 +135,14 @@ ul { list-style: none; padding: 0; }
 .time {
   display: flex; align-items: baseline; gap: .08em;
   font-family: var(--f-num); font-weight: 600;
-  font-size: clamp(88px, 14vw, 150px);
+  font-size: clamp(84px, 12vw, 148px);
   line-height: .86; letter-spacing: -.01em;
   font-variant-numeric: tabular-nums;
 }
 .time .sec { font-size: .3em; font-weight: 500; color: var(--fg-3); letter-spacing: 0; }
-.dateline { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; margin-top: 14px; }
-.dateline .big { font-size: 30px; font-weight: 700; line-height: 1.2; }
-.dateline .wd { font-size: 30px; font-weight: 400; color: var(--fg-2); line-height: 1.2; }
+.dateline { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; margin-top: 12px; }
+.dateline .big { font-size: clamp(23px, 2.5vw, 30px); font-weight: 700; line-height: 1.2; }
+.dateline .wd { font-size: clamp(23px, 2.5vw, 30px); font-weight: 400; color: var(--fg-2); line-height: 1.2; }
 .weekline { margin-top: 2px; font-size: 13px; letter-spacing: .06em; color: var(--fg-3); }
 .zone {
   margin-top: 10px; display: inline-flex; align-items: baseline; gap: 8px;
@@ -125,16 +159,17 @@ ul { list-style: none; padding: 0; }
   color: var(--fg-2); font-size: 13px; font-weight: 500; padding: 0 10px;
 }
 .cal .calnav button:hover { background: var(--panel-2); }
-.cal .ctitle { font-size: 20px; font-weight: 700; color: var(--fg); letter-spacing: 0; }
+.cal .ctitle { font-size: 17px; font-weight: 700; color: var(--fg); letter-spacing: 0; }
 .dow { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; margin-bottom: 4px; }
 .dow span { text-align: center; font-size: 12px; color: var(--fg-3); letter-spacing: .08em; padding: 2px 0; }
 .dow span:nth-child(n+6) { color: var(--fg-2); }
 .days {
   flex: 1; min-height: 0; display: grid; gap: 2px;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  grid-template-rows: repeat(var(--rows, 6), minmax(34px, 1fr));
+  grid-template-rows: repeat(var(--rows, 6), minmax(20px, 1fr));
 }
-.d { display: grid; place-items: center; font-family: var(--f-num); font-size: 21px; font-weight: 500; border-radius: 10px; font-variant-numeric: tabular-nums; }
+.cal .phead { margin-bottom: 4px; }
+.d { display: grid; place-items: center; font-family: var(--f-num); font-size: 19px; font-weight: 500; border-radius: 10px; font-variant-numeric: tabular-nums; }
 .d.we { color: var(--fg-2); }
 .d.out { color: var(--fg-3); opacity: .55; }
 .d.today { background: var(--focus); color: var(--focus-ink); font-weight: 600; opacity: 1; }
@@ -181,33 +216,35 @@ ul { list-style: none; padding: 0; }
 .tfoot button:disabled { opacity: .4; }
 
 /* pomodoro */
-.pomo { --pm: var(--focus); --pm-ink: var(--focus-ink); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px; align-items: center; }
+.pomo { --pm: var(--focus); --pm-ink: var(--focus-ink); display: grid; grid-template-columns: minmax(190px, .85fr) minmax(0, 1.15fr); grid-template-rows: 44px minmax(0, 1fr); gap: 12px 20px; align-items: center; position: relative; }
 .pomo[data-mode="short"], .pomo[data-mode="long"] { --pm: var(--rest); --pm-ink: var(--rest-ink); }
-.ring { position: relative; width: 172px; height: 172px; }
+.pomo-heading { grid-column: 1 / -1; align-self: start; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pomo-heading span { font-size: 12px; color: var(--fg-3); }
+.ring { position: relative; width: clamp(190px, 24vw, 300px); height: clamp(190px, 24vw, 300px); align-self: center; justify-self: center; grid-column: 1; grid-row: 2; flex: none; }
 .ring svg { width: 100%; height: 100%; display: block; }
 .ring .trk { fill: none; stroke: var(--line); stroke-width: 9; }
 .ring .prg { fill: none; stroke: var(--pm); stroke-width: 9; stroke-linecap: round; transition: stroke-dashoffset .25s linear; }
 .rtxt { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; }
-.rtxt .pm { font-size: 12px; letter-spacing: .14em; color: var(--pm); font-weight: 700; }
-.rtxt .pc { font-family: var(--f-num); font-size: 46px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
-.pside { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.rtxt .pm { font-size: 14px; letter-spacing: .14em; color: var(--pm); font-weight: 700; }
+.rtxt .pc { font-family: var(--f-num); font-size: clamp(64px, 8vw, 98px); font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.pside { grid-column: 2; grid-row: 2; align-self: center; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 3px; background: var(--panel-2); border-radius: 12px; }
 .seg button { height: 38px; border-radius: 9px; font-size: 14px; font-weight: 500; color: var(--fg-2); }
 .seg button[aria-pressed="true"] { background: var(--pm); color: var(--pm-ink); font-weight: 700; }
 .seg button:disabled:not([aria-pressed="true"]) { opacity: .45; }
-.ptarget { font-size: 14px; color: var(--fg-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ptarget { text-align: center; font-size: 14px; color: var(--fg-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ptarget b { color: var(--fg); font-weight: 500; }
-.pnote { font-size: 14px; color: var(--pm); font-weight: 500; }
-.pctl { display: flex; align-items: center; gap: 8px; }
-.pctl .go { height: 48px; min-width: 112px; padding: 0 22px; border-radius: 12px; background: var(--pm); color: var(--pm-ink); font-weight: 700; font-size: 16px; }
+.pnote { text-align: center; font-size: 14px; color: var(--pm); font-weight: 500; }
+.pctl { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.pctl .go { height: 48px; min-width: 160px; flex: 1; padding: 0 22px; border-radius: 12px; background: var(--pm); color: var(--pm-ink); font-weight: 700; font-size: 16px; }
 .pctl .ghost { height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); color: var(--fg-2); font-size: 14px; }
 .pctl .ghost:hover { background: var(--panel-2); }
-.pmeta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 13px; color: var(--fg-2); }
+.pmeta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 12px; font-size: 13px; color: var(--fg-2); }
 .dots { display: flex; gap: 6px; }
 .dots i { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--fg-3); }
 .dots i.on { background: var(--focus); border-color: var(--focus); }
 .len { display: inline-flex; align-items: center; gap: 2px; }
-.len button { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; color: var(--fg-2); }
+.len button { width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center; color: var(--fg-2); }
 .len button:hover:not(:disabled) { background: var(--panel-2); }
 .len button:disabled { opacity: .35; }
 .len span { min-width: 52px; text-align: center; font-variant-numeric: tabular-nums; }
@@ -218,30 +255,131 @@ ul { list-style: none; padding: 0; }
   @keyframes pulse { 50% { transform: scale(1.05); } }
 }
 
-@media (max-width: 760px) {
-  html, body { height: auto; }
-  .dash {
-    height: auto;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: none;
-    grid-template-areas: "clock" "tasks" "pomo" "cal";
-  }
-  #taskList { max-height: 60vh; }
-  .days { grid-template-rows: repeat(var(--rows, 6), 44px); }
-}
-@media (max-width: 480px) {
-  .pomo { grid-template-columns: minmax(0, 1fr); justify-items: center; }
-  .pside { width: 100%; }
-}
-@media (min-width: 761px) and (max-height: 640px) {
-  html, body { height: auto; }
-  .dash { height: auto; grid-template-rows: auto auto auto; }
-  #taskList { max-height: 320px; }
-  .days { grid-template-rows: repeat(var(--rows, 6), 44px); }
-}
-</style>
 
+.pomo .seg { position: absolute; top: 14px; right: 16px; width: 224px; }
+.pomo .seg button { height: 38px; font-size: 13px; }
+.pomo-heading { min-height: 44px; padding-right: 234px; }
+.pomo-heading span { display: none; }
+.pomo .pside { gap: 12px; }
+.tasks .phead { margin-bottom: 7px; }
+.tasks .bar { margin-bottom: 8px; }
+.tasks .tfoot { padding-top: 4px; }
+.tasks .tfoot button { height: 30px; }
+.screen-tip { position: fixed; z-index: 50; top: max(66px, env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); width: min(410px, calc(100vw - 24px)); padding: 18px; border: 1px solid var(--focus); border-radius: 14px; background: var(--panel); box-shadow: 0 16px 70px #0004; }
+.screen-tip strong { display: block; margin-bottom: 8px; }
+.screen-tip p { color: var(--fg-2); font-size: 14px; line-height: 1.7; }
+.screen-tip button { margin-top: 12px; min-height: 40px; padding: 0 16px; border: 1px solid var(--line); border-radius: 9px; color: var(--fg); }
+@media (min-width: 901px) {
+  .pomo .pctl .go { min-width: 120px; }
+}
+@media (min-width: 901px) and (max-height: 850px) {
+  .time { font-size: clamp(88px, 10.8vw, 112px); }
+  .dateline { margin-top: 10px; }
+  .dateline .big, .dateline .wd { font-size: 24px; }
+  .zone { margin-top: 6px; padding: 4px 10px; }
+  .zone .zt { font-size: 17px; line-height: 1; }
+  .ring { width: clamp(178px, 22vw, 220px); height: clamp(178px, 22vw, 220px); }
+  .rtxt .pc { font-size: clamp(64px, 7vw, 88px); }
+  .pomo { padding-top: 12px; padding-bottom: 12px; }
+  .pomo .pside { gap: 12px; }
+}
+@media (min-width: 901px) and (max-height: 720px) {
+  body { height: auto; min-height: 100vh; }
+  .app { height: auto; }
+  .dash { min-height: 628px; }
+  .date-column { grid-template-rows: 166px 234px 204px; }
+  .focus-column { grid-template-rows: 316px 300px; }
+  .clock .time { font-size: 96px; }
+  .clock .zone { display: none; }
+  .pomo .ring { width: 180px; height: 180px; }
+  .pomo .rtxt .pc { font-size: 64px; }
+}
+@media (max-width: 900px) {
+  body { height: auto; min-height: 100vh; }
+  .app { height: auto; }
+  .dash { flex: none; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "clock" "pomo" "milestones" "tasks" "cal"; }
+  .date-column, .focus-column { display: contents; }
+  .clock { padding: 16px 8px 8px; }
+  .time { font-size: clamp(94px, 22vw, 145px); }
+  .pomo { display: flex; flex-direction: column; padding: 16px; gap: 12px; }
+  .pomo-heading, .pside { width: 100%; }
+  .ring { width: min(68vw, 300px); height: min(68vw, 300px); }
+  .rtxt .pc { font-size: clamp(70px, 18vw, 98px); }
+  #taskList { max-height: 280px; }
+  .milestones { min-height: 218px; }
+  .cal { min-height: 294px; }
+  .days { grid-template-rows: repeat(var(--rows, 6), 32px); }
+}
+@media (max-width: 380px) {
+  .brand { letter-spacing: 0; font-size: 12px; gap: 6px; }
+  .top-actions { gap: 5px; }
+  .tool-btn { padding: 0 9px; font-size: 12px; }
+  .pomo .seg { width: 190px; }
+  .pomo-heading { padding-right: 196px; }
+  .pctl .go { min-width: 110px; }
+  .pctl .ghost { padding: 0 12px; }
+}
+
+/* Date counters */
+.milestones { grid-area: milestones; display: flex; flex-direction: column; }
+.milestones .phead { margin-bottom: 6px; flex: none; }
+.milestone-add { min-height: 44px; color: var(--fg-2); background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px; padding: 6px 10px; font-size: 12px; white-space: nowrap; }
+.milestone-add:hover { color: var(--fg); border-color: var(--focus); }
+.milestone-list { display: grid; gap: 8px; overflow: auto; min-height: 0; align-content: start; max-height: 264px; }
+.milestone-card { display: flex; align-items: stretch; min-height: 66px; border: 1px solid var(--line); border-radius: 11px; background: var(--panel-2); overflow: hidden; flex-shrink: 0; }
+.milestone-edit { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; text-align: left; min-width: 0; color: var(--fg); }
+.milestone-edit:hover { background: var(--line); }
+.milestone-info { min-width: 0; display: grid; gap: 5px; }
+.milestone-name { font-size: 14px; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.milestone-date { overflow: hidden; text-overflow: ellipsis; font-size: 11px; color: var(--fg-3); white-space: nowrap; }
+.milestone-value { display: flex; align-items: baseline; gap: 4px; justify-content: flex-end; flex-wrap: wrap; color: var(--focus); text-align: right; flex: none; }
+.milestone-card[data-type="countup"] .milestone-value { color: var(--rest); }
+.milestone-number { font-family: var(--f-num); font-size: clamp(24px, 3vw, 34px); line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; }
+.milestone-unit { font-size: 11px; }
+.milestone-status { font-size: 13px; font-weight: 600; }
+.milestone-delete { width: 40px; min-height: 44px; padding: 0 6px; color: var(--fg-3); font-size: 18px; }
+.milestone-delete:hover { color: var(--fg); background: var(--line); }
+.milestone-empty { min-height: 66px; border: 1px dashed var(--line); border-radius: 11px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left; color: var(--fg-2); }
+.milestone-empty:hover { border-color: var(--focus); }
+.milestone-empty strong { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.milestone-empty small { color: var(--fg-3); font-size: 11px; }
+.milestone-empty b { color: var(--fg-3); font-size: 24px; font-weight: 300; }
+.milestone-overlay { position: fixed; inset: 0; z-index: 100; padding: 20px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.52); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.milestone-overlay[hidden] { display: none; }
+.milestone-dialog { width: min(100%, 390px); max-height: calc(100vh - 40px); overflow: auto; border-radius: 18px; padding: 22px; color: var(--fg); background: var(--panel); border: 1px solid var(--line); box-shadow: 0 24px 80px rgba(0,0,0,.25); }
+.milestone-dialog h2 { font-size: 17px; font-weight: 600; }
+.milestone-close { color: var(--fg-2); font-size: 24px; width: 44px; height: 44px; }
+.milestone-field { display: grid; gap: 8px; margin-top: 16px; font-size: 12px; color: var(--fg-2); }
+.milestone-field input, .milestone-field select { width: 100%; min-width: 0; min-height: 43px; padding: 9px 11px; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px; font: inherit; font-size: 16px; color-scheme: inherit; }
+.milestone-include { display: flex; gap: 8px; align-items: center; margin-top: 15px; color: var(--fg-2); font-size: 12px; }
+.milestone-include[hidden] { display: none; }
+.milestone-include input { accent-color: var(--rest); }
+.milestone-error { color: var(--focus); min-height: 18px; margin-top: 12px; font-size: 12px; }
+.milestone-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+.milestone-actions button { min-width: 72px; border-radius: 9px; padding: 10px 16px; font-weight: 600; }
+.milestone-cancel { background: var(--panel-2); color: var(--fg-2); border: 1px solid var(--line); }
+.milestone-save { background: var(--focus); color: var(--focus-ink); }
+body.milestone-modal-open { overflow: hidden; }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span>副屏仪表盘</div>
+    <div class="top-actions">
+      <button class="tool-btn" type="button" id="themeToggle" aria-label="切换到浅色模式">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+        <span id="themeLabel">浅色模式</span>
+      </button>
+      <button class="tool-btn" type="button" id="fullscreenToggle" aria-pressed="false" aria-controls="fullscreenTip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg>
+        <span id="fullscreenLabel">全屏</span>
+      </button>
+    </div>
+  </header>
 <main class="dash">
+  <div class="date-column">
   <section class="clock" aria-label="当前时间">
     <div class="time" aria-hidden="false"><span id="hm">--:--</span><span class="sec" id="ss">--</span></div>
     <div class="dateline"><span class="big" id="dayBig"></span><span class="wd" id="wday"></span></div>
@@ -262,24 +400,44 @@ ul { list-style: none; padding: 0; }
     <div class="days" id="days"></div>
   </section>
 
-  <section class="panel tasks" aria-label="今日任务">
+  <section class="panel milestones" aria-labelledby="milestoneHeading">
     <div class="phead">
-      <div class="headr"><h2>今日任务</h2><span class="count" id="taskCount">0 / 0</span></div>
-      <span class="sync" id="sync"></span>
+      <h2 id="milestoneHeading">倒数日 · 正数日</h2>
+      <button type="button" class="milestone-add" id="milestoneAdd" aria-label="添加倒数日或正数日">＋ 添加</button>
     </div>
-    <div class="bar" aria-hidden="true"><i id="bar"></i></div>
-    <form class="addrow" id="addForm" autocomplete="off">
-      <input id="taskInput" type="text" maxlength="80" placeholder="写下一件事，按回车添加" aria-label="新任务">
-      <button type="submit" class="btn-solid">添加</button>
-    </form>
-    <ul id="taskList"></ul>
-    <div class="tfoot">
-      <span>点任务名，设为当前专注</span>
-      <button type="button" id="clearDone">清除已完成</button>
-    </div>
+    <div class="milestone-list" id="milestoneList"></div>
   </section>
 
+  <div class="milestone-overlay" id="milestoneOverlay" hidden>
+    <section class="milestone-dialog" role="dialog" aria-modal="true" aria-labelledby="milestoneDialogTitle" tabindex="-1">
+      <div class="phead">
+        <h2 id="milestoneDialogTitle">添加日期</h2>
+        <button type="button" class="milestone-close" id="milestoneClose" aria-label="关闭日期设置">×</button>
+      </div>
+      <form id="milestoneForm" novalidate>
+        <label class="milestone-field">计数方式
+          <select id="milestoneType"><option value="countdown">倒数日 · 距离目标</option><option value="countup">正数日 · 从这天开始</option></select>
+        </label>
+        <label class="milestone-field">名称
+          <input id="milestoneTitle" type="text" maxlength="40" placeholder="例如：旅行出发 / 坚持阅读" required autocomplete="off">
+        </label>
+        <label class="milestone-field"><span id="milestoneDateLabel">目标日期</span>
+          <input id="milestoneDate" type="date" min="1900-01-01" max="9999-12-31" required>
+        </label>
+        <label class="milestone-include" id="milestoneIncludeWrap"><input id="milestoneInclude" type="checkbox"> 起始当天算第 1 天</label>
+        <p class="milestone-error" id="milestoneError" role="alert"></p>
+        <div class="milestone-actions">
+          <button type="button" class="milestone-cancel" id="milestoneCancel">取消</button>
+          <button type="submit" class="milestone-save">保存</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  </div>
+  <div class="focus-column">
   <section class="panel pomo" id="pomo" data-mode="focus" aria-label="番茄钟">
+    <div class="pomo-heading"><h2>番茄钟</h2><span>一次只专注一件事</span></div>
     <div class="ring">
       <svg viewBox="0 0 200 200" aria-hidden="true">
         <circle class="trk" cx="100" cy="100" r="88"/>
@@ -313,7 +471,32 @@ ul { list-style: none; padding: 0; }
       </div>
     </div>
   </section>
+
+  <section class="panel tasks" aria-label="今日任务">
+    <div class="phead">
+      <div class="headr"><h2>今日任务</h2><span class="count" id="taskCount">0 / 0</span></div>
+      <span class="sync" id="sync"></span>
+    </div>
+    <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+    <form class="addrow" id="addForm" autocomplete="off">
+      <input id="taskInput" type="text" maxlength="80" placeholder="写下一件事，按回车添加" aria-label="新任务">
+      <button type="submit" class="btn-solid">添加</button>
+    </form>
+    <ul id="taskList"></ul>
+    <div class="tfoot">
+      <span>点任务名，设为当前专注</span>
+      <button type="button" id="clearDone">清除已完成</button>
+    </div>
+  </section>
+  </div>
 </main>
+
+</div>
+<aside class="screen-tip" id="fullscreenTip" role="status" hidden>
+  <strong>Safari 全屏显示</strong>
+  <p id="fullscreenHelp"></p>
+  <button type="button" id="dismissFullscreenTip">知道了</button>
+</aside>
 
 <script>
 (function () {
@@ -341,6 +524,68 @@ ul { list-style: none; padding: 0; }
   }
   var last = {};
   function setText(id, v) { if (last[id] !== v) { last[id] = v; $(id).textContent = v; } }
+
+  /* ---------- appearance + Safari fullscreen ---------- */
+  var themeChoice = lsGet('dash:theme:v1');
+  if (themeChoice !== 'light' && themeChoice !== 'dark') themeChoice = null;
+  var systemTheme = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
+  function applyTheme() {
+    var light = themeChoice ? themeChoice === 'light' : !!(systemTheme && systemTheme.matches);
+    document.documentElement.setAttribute('data-theme', light ? 'light' : 'dark');
+    $('themeLabel').textContent = light ? '深色模式' : '浅色模式';
+    $('themeToggle').setAttribute('aria-label', light ? '切换到深色模式' : '切换到浅色模式');
+    $('themeToggle').title = light ? '切换到深色模式' : '切换到浅色模式';
+    $('themeColor').setAttribute('content', light ? '#e8ecf1' : '#11151c');
+  }
+  $('themeToggle').addEventListener('click', function () {
+    themeChoice = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    lsSet('dash:theme:v1', themeChoice);
+    applyTheme();
+  });
+  if (systemTheme) {
+    if (systemTheme.addEventListener) systemTheme.addEventListener('change', applyTheme);
+    else if (systemTheme.addListener) systemTheme.addListener(applyTheme);
+  }
+  applyTheme();
+
+  function fullscreenElement() { return document.fullscreenElement || document.webkitFullscreenElement; }
+  function standalone() {
+    return navigator.standalone === true || !!(window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches));
+  }
+  function syncFullscreen() {
+    var active = !!fullscreenElement(), installed = standalone();
+    $('fullscreenLabel').textContent = active ? '退出全屏' : (installed ? '独立显示' : '全屏');
+    $('fullscreenToggle').setAttribute('aria-pressed', active ? 'true' : 'false');
+    $('fullscreenToggle').title = active ? '退出全屏（也可按 Esc）' : '进入全屏显示';
+    if (active) $('fullscreenTip').hidden = true;
+  }
+  function showFullscreenHelp() {
+    var appleTouch = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    $('fullscreenHelp').textContent = appleTouch
+      ? '此版本的 Safari 未能进入网页全屏。请在 Safari 的分享菜单中选择“添加到主屏幕”，再从桌面图标打开，即可隐藏 Safari 工具栏。若出现“作为网页 App 打开”，请保持开启。'
+      : '未能进入网页全屏，请再点一次“全屏”。Mac 也可使用 Safari 的“显示 → 进入全屏幕”，或按 Control + Command + F。';
+    $('fullscreenTip').hidden = false;
+  }
+  $('fullscreenToggle').addEventListener('click', function () {
+    var active = fullscreenElement();
+    var root = document.documentElement;
+    var action = active ? (document.exitFullscreen || document.webkitExitFullscreen || document.webkitCancelFullScreen)
+      : (root.requestFullscreen || root.webkitRequestFullscreen || root.webkitRequestFullScreen);
+    if (!action) { showFullscreenHelp(); return; }
+    try {
+      // Keep the request inside the click handler: Safari requires user activation.
+      var result = action.call(active ? document : root);
+      if (result && result.then) result.then(syncFullscreen, showFullscreenHelp);
+    } catch (e) { showFullscreenHelp(); }
+  });
+  document.addEventListener('fullscreenchange', syncFullscreen);
+  document.addEventListener('webkitfullscreenchange', syncFullscreen);
+  document.addEventListener('fullscreenerror', showFullscreenHelp);
+  document.addEventListener('webkitfullscreenerror', showFullscreenHelp);
+  $('dismissFullscreenTip').addEventListener('click', function () { $('fullscreenTip').hidden = true; $('fullscreenToggle').focus(); });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') $('fullscreenTip').hidden = true; });
+  syncFullscreen();
+
 
   /* ---------- state (tasks, today's rounds): local + optional private sync ---------- */
   function seedState() {
@@ -484,6 +729,141 @@ ul { list-style: none; padding: 0; }
     box.appendChild(frag);
     box.style.setProperty('--rows', rows);
   }
+
+  /* Civil calendar days avoid daylight-saving and UTC-date shifts. */
+  var LS_MILESTONES = 'dash:milestones:v1';
+  function milestoneDay(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+    var bits = value.split('-').map(Number), y = bits[0], m = bits[1], d = bits[2];
+    if (y < 1900 || y > 9999 || m < 1 || m > 12 || d < 1 || d > 31) return null;
+    var stamp = Date.UTC(y, m - 1, d), date = new Date(stamp);
+    return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d ? stamp / 86400000 : null;
+  }
+  var milestoneSaved = lsGet(LS_MILESTONES);
+  var milestoneItems = (Array.isArray(milestoneSaved) ? milestoneSaved : []).filter(function (item) {
+    return item && typeof item.id === 'string' && typeof item.title === 'string' && item.title.trim() &&
+      typeof item.date === 'string' && milestoneDay(item.date) !== null && (item.type === 'countdown' || item.type === 'countup');
+  }).map(function (item) {
+    return { id: item.id, title: item.title.trim().slice(0, 40), date: item.date, type: item.type, includeStart: !!item.includeStart };
+  });
+  var milestoneEditing = null, milestoneReturnFocus = null;
+  function milestoneNode(tag, className, value) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (value !== undefined) node.textContent = value;
+    return node;
+  }
+  function renderMilestones() {
+    var list = $('milestoneList');
+    list.textContent = '';
+    if (!milestoneItems.length) {
+      [{ type: 'countdown', title: '添加一个倒数日', hint: '期待下一次出发、生日或重要时刻' },
+        { type: 'countup', title: '记录一个正数日', hint: '记录习惯、陪伴与每一份坚持' }].forEach(function (sample) {
+        var button = milestoneNode('button', 'milestone-empty'); button.type = 'button';
+        var copy = milestoneNode('span');
+        copy.appendChild(milestoneNode('strong', '', sample.title));
+        copy.appendChild(milestoneNode('small', '', sample.hint));
+        button.appendChild(copy); button.appendChild(milestoneNode('b', '', '＋'));
+        button.addEventListener('click', function () { openMilestone(null, sample.type); });
+        list.appendChild(button);
+      });
+      return;
+    }
+    var today = milestoneDay(dayStr());
+    milestoneItems.forEach(function (item) {
+      var difference = milestoneDay(item.date) - today;
+      var card = milestoneNode('div', 'milestone-card'); card.setAttribute('data-type', item.type);
+      var edit = milestoneNode('button', 'milestone-edit'); edit.type = 'button'; edit.setAttribute('aria-label', '编辑' + item.title);
+      var info = milestoneNode('span', 'milestone-info');
+      info.appendChild(milestoneNode('span', 'milestone-name', item.title));
+      info.appendChild(milestoneNode('span', 'milestone-date', item.date.replace(/-/g, '.') + ' · ' +
+        (item.type === 'countdown' ? '倒数日' : '正数日' + (item.includeStart ? ' · 含起始日' : ''))));
+      var value = milestoneNode('span', 'milestone-value');
+      var amount, caption;
+      if (item.type === 'countdown') {
+        if (difference === 0) value.appendChild(milestoneNode('span', 'milestone-status', '就是今天'));
+        else { amount = Math.abs(difference); caption = difference > 0 ? '天后' : '天前'; }
+      } else if (difference > 0) {
+        value.appendChild(milestoneNode('span', 'milestone-unit', '还有'));
+        amount = difference; caption = '天开始';
+      } else {
+        amount = -difference + (item.includeStart ? 1 : 0); caption = '天';
+      }
+      if (amount !== undefined) {
+        if (item.type === 'countdown' && difference < 0) {
+          value.appendChild(milestoneNode('span', 'milestone-unit', '已过'));
+          caption = '天';
+        } else if (item.type === 'countup' && difference <= 0) value.appendChild(milestoneNode('span', 'milestone-unit', '已坚持'));
+        value.appendChild(milestoneNode('span', 'milestone-number', String(amount)));
+        value.appendChild(milestoneNode('span', 'milestone-unit', caption));
+      }
+      edit.setAttribute('aria-label', '编辑' + item.title + '，' + item.date + '，' + value.textContent);
+      edit.appendChild(info); edit.appendChild(value);
+      edit.addEventListener('click', function () { openMilestone(item); });
+      var remove = milestoneNode('button', 'milestone-delete', '×'); remove.type = 'button'; remove.setAttribute('aria-label', '删除' + item.title);
+      remove.addEventListener('click', function () {
+        milestoneItems = milestoneItems.filter(function (other) { return other.id !== item.id; });
+        lsSet(LS_MILESTONES, milestoneItems); renderMilestones();
+        $('milestoneAdd').focus();
+      });
+      card.appendChild(edit); card.appendChild(remove); list.appendChild(card);
+    });
+  }
+  function milestoneMode() {
+    var countup = $('milestoneType').value === 'countup';
+    $('milestoneDateLabel').textContent = countup ? '起始日期' : '目标日期';
+    $('milestoneIncludeWrap').hidden = !countup;
+  }
+  function openMilestone(item, initialType) {
+    milestoneEditing = item ? item.id : null;
+    milestoneReturnFocus = document.activeElement;
+    $('milestoneDialogTitle').textContent = item ? '编辑日期' : '添加日期';
+    $('milestoneType').value = item ? item.type : (initialType || 'countdown');
+    $('milestoneTitle').value = item ? item.title : '';
+    var defaultDate = new Date();
+    if ($('milestoneType').value === 'countdown') defaultDate.setDate(defaultDate.getDate() + 30);
+    $('milestoneDate').value = item ? item.date : dayStr(defaultDate);
+    $('milestoneInclude').checked = item ? item.includeStart : false;
+    $('milestoneError').textContent = '';
+    milestoneMode(); $('milestoneOverlay').hidden = false;
+    document.body.classList.add('milestone-modal-open');
+    $('milestoneTitle').focus();
+  }
+  function closeMilestone() {
+    $('milestoneOverlay').hidden = true;
+    document.body.classList.remove('milestone-modal-open');
+    var returnNode = milestoneReturnFocus && document.documentElement.contains(milestoneReturnFocus) ? milestoneReturnFocus : $('milestoneAdd');
+    returnNode.focus();
+  }
+  $('milestoneAdd').addEventListener('click', function () { openMilestone(); });
+  $('milestoneType').addEventListener('change', milestoneMode);
+  $('milestoneCancel').addEventListener('click', closeMilestone);
+  $('milestoneClose').addEventListener('click', closeMilestone);
+  $('milestoneOverlay').addEventListener('click', function (event) { if (event.target === this) closeMilestone(); });
+  $('milestoneForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    var title = $('milestoneTitle').value.trim(), date = $('milestoneDate').value;
+    if (!title) { $('milestoneError').textContent = '请填写一个名称。'; $('milestoneTitle').focus(); return; }
+    if (milestoneDay(date) === null) { $('milestoneError').textContent = '请选择有效日期（1900—9999 年）。'; $('milestoneDate').focus(); return; }
+    var item = { id: milestoneEditing || uid(), type: $('milestoneType').value, title: title.slice(0, 40), date: date, includeStart: $('milestoneInclude').checked };
+    var index = milestoneItems.findIndex(function (other) { return other.id === milestoneEditing; });
+    if (index === -1) milestoneItems.push(item); else milestoneItems[index] = item;
+    lsSet(LS_MILESTONES, milestoneItems); renderMilestones(); closeMilestone();
+  });
+  document.addEventListener('keydown', function (event) {
+    if ($('milestoneOverlay').hidden) return;
+    if (event.key === 'Escape') { event.preventDefault(); closeMilestone(); }
+    if (event.key === 'Tab') {
+      var focusable = Array.prototype.filter.call($('milestoneOverlay').querySelectorAll('button, input, select, [tabindex="0"]'), function (node) {
+        return !node.disabled && node.getClientRects().length > 0;
+      });
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+  });
+  renderMilestones();
+
 
   /* ---------- tasks ---------- */
   function renderTasks() {
@@ -717,6 +1097,7 @@ ul { list-style: none; padding: 0; }
       lastDay = ds;
       checkDay();
       renderCal();
+      renderMilestones();
     }
     if (timer.running) {
       var left = timer.endAt - Date.now();
@@ -730,10 +1111,11 @@ ul { list-style: none; padding: 0; }
   renderCal();
   renderTasks();
   renderPomo();
+  renderMilestones();
   setInterval(tick, 250);
   initSync();
   if (cfg.wake) setWake(true);
 })();
 </script>
-
-</body></html>
+</body>
+</html>
