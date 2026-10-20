@@ -849,7 +849,7 @@ ul { list-style: none; padding: 0; }
 }
 
 /* Mono: warm monochrome surfaces, large type and one small orange accent. */
-.weather, .focus-stats { display: none; }
+.weather, .pomo-utility { display: none; }
 :root[data-skin="mono"] {
   --bg: #202020; --panel: #2b2b2b; --panel-2: #343434; --line: #424242;
   --fg: #ededeb; --fg-2: #bdbdb8; --fg-3: #a9a9a4;
@@ -870,94 +870,117 @@ ul { list-style: none; padding: 0; }
 [data-skin="mono"] .tool-btn { font-size: 12px; border-radius: 99px; }
 [data-skin="mono"] .skin-picker select { border: 0; min-width: 78px; padding-left: 10px; font-size: 13px; }
 [data-skin="mono"] .top-actions { gap: 4px; }
-[data-skin="mono"] .clock { left: 148px; right: 548px; top: 0; gap: 3px 12px; }
+[data-skin="mono"] .clock { left: 148px; right: 548px; top: 0; display: flex; align-items: center; gap: 12px; }
 [data-skin="mono"] .time { font-size: 40px; font-weight: 400; letter-spacing: -.035em; }
 [data-skin="mono"] .dateline { font-size: 13px; gap: 7px; }
-[data-skin="mono"] .zone { font-size: 11px; gap: 6px; }
+[data-skin="mono"] .zone { display: none; }
 [data-skin="mono"] .zone .zt { font-size: 12px; }
 [data-skin="mono"] .weather { display: block; position: absolute; left: 460px; right: 320px; top: 0; }
-[data-skin="mono"] .dash { grid-template-columns: repeat(6,minmax(0,1fr)); grid-template-rows: minmax(0,1fr) 212px; grid-template-areas: "pomo pomo pomo tasks tasks tasks" "cal cal milestones milestones stats stats"; gap: 16px; }
+[data-skin="mono"] .dash { grid-template-columns: minmax(0,1.08fr) minmax(0,1fr); grid-template-rows: minmax(0,1fr) 160px; grid-template-areas: "pomo tasks" "cal milestones"; gap: 22px 24px; }
 [data-skin="mono"] .pomo,
-[data-skin="mono"] .tasks,
-[data-skin="mono"] .cal,
-[data-skin="mono"] .milestones,
-[data-skin="mono"] .focus-stats { background: var(--panel); border-radius: 27px; box-shadow: 0 6px 24px var(--shadow); border: 0; }
-[data-skin="mono"] .pomo { display: grid; padding: 22px; grid-template-rows: 56px minmax(0,1fr) 44px 48px; gap: 8px; }
-[data-skin="mono"] .pomo-heading { align-items: flex-start; min-height: 56px; }
-[data-skin="mono"] .pomo-heading h2 { font-size: 35px; line-height: 1.15; font-weight: 400; letter-spacing: .03em; color: var(--fg); }
-[data-skin="mono"] .pomo-heading h2::after { content: "FOCUS"; display: block; margin-top: 5px; font-family: var(--f-num); font-size: 10px; font-weight: 500; letter-spacing: .12em; color: var(--fg-3); }
+[data-skin="mono"] .tasks { background: var(--panel); border-radius: 27px; box-shadow: 0 6px 24px var(--shadow); border: 0; }
+[data-skin="mono"] .pomo { position: relative; display: grid; justify-content: normal; padding: 26px; grid-template-columns: minmax(0,1fr); grid-template-rows: 44px minmax(0,1fr) auto 32px; gap: 12px; }
+[data-skin="mono"] .pomo-heading { align-items: center; min-height: 44px; }
+[data-skin="mono"] .pomo-heading h2 { font-size: 26px; line-height: 1.2; font-weight: 500; letter-spacing: .02em; color: var(--fg); }
+[data-skin="mono"] .pomo-heading h2::after { display: none; }
 [data-skin="mono"] .seg { gap: 9px; }
 [data-skin="mono"] .seg button { min-width: 38px; height: 40px; border: 0; font-size: 13px; color: var(--fg-3); position: relative; }
 [data-skin="mono"] .seg button[aria-pressed="true"] { color: var(--fg); }
 [data-skin="mono"] .seg button[aria-pressed="true"]::after { content: ""; position: absolute; left: 50%; bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: var(--mono-action); }
 [data-skin="mono"] .ring { margin: 0; width: 100%; align-self: center; }
 [data-skin="mono"] .rtxt { display: block; text-align: center; }
-[data-skin="mono"] .pc { font-size: clamp(112px,12.2vw,168px); font-weight: 400; letter-spacing: 0; }
-[data-skin="mono"] .linear-timer { margin: 18px auto 0; width: 84%; height: 2px; border-radius: 99px; overflow: hidden; }
+[data-skin="mono"] .pc { font-size: clamp(124px,13.2vw,176px); font-weight: 400; letter-spacing: 0; }
+[data-skin="mono"] .linear-timer { margin: 18px auto 0; width: 76%; height: 2px; border-radius: 99px; overflow: hidden; }
 [data-skin="mono"] .linear-timer i { background: var(--mono-action); }
-[data-skin="mono"] .pside { gap: 3px 10px; }
-[data-skin="mono"] .ptarget { font-size: 15px; }
-[data-skin="mono"] .pnote { font-size: 12px; }
-[data-skin="mono"] .pctl { gap: 6px; }
-[data-skin="mono"] .pctl .go { min-width: 82px; height: 44px; padding: 0 14px; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 99px; font-size: 14px; font-weight: 500; background: var(--fg); color: var(--bg); }
+[data-skin="mono"] .pside { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+[data-skin="mono"] .ptarget { width: 100%; font-size: 16px; text-align: center; }
+[data-skin="mono"] .pnote { font-size: 13px; text-align: center; }
+[data-skin="mono"] .pctl { gap: 10px; }
+[data-skin="mono"] .pctl .go { min-width: 112px; height: 48px; padding: 0 22px; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 99px; font-size: 16px; font-weight: 500; background: var(--fg); color: var(--bg); }
 [data-skin="mono"] .pctl .go::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--mono-action); }
-[data-skin="mono"] .pctl .ghost { min-width: 40px; height: 44px; padding: 0 7px; border-radius: 99px; background: var(--panel-2); font-size: 12px; }
-[data-skin="mono"] .pmeta { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); grid-template-rows: 22px 22px; gap: 4px 12px; margin: 0; font-size: 12px; }
+[data-skin="mono"] .pctl .ghost { min-width: 48px; height: 48px; padding: 0 12px; border-radius: 99px; background: transparent; font-size: 14px; }
+[data-skin="mono"] .pctl .ghost:hover { background: var(--panel-2); }
+[data-skin="mono"] .pomo-utility { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; }
+.pomo-utility-button { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; font-size: 13px; color: var(--fg-3); }
+.pomo-utility-button svg { width: 18px; height: 18px; flex: none; }
+.pomo-utility-button:hover, .pomo-utility-button[aria-expanded="true"] { color: var(--fg); }
+[data-skin="mono"] .pmeta { display: none; position: absolute; right: 26px; bottom: 68px; z-index: 25; width: min(320px,calc(100% - 52px)); grid-template-columns: minmax(0,1fr) minmax(0,1fr); grid-template-rows: 28px 28px; gap: 8px 12px; margin: 0; padding: 16px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 10px 36px #0002; font-size: 12px; }
+[data-skin="mono"] .pomo.settings-open .pmeta { display: grid; }
 [data-skin="mono"] .pmeta .len { justify-self: end; }
-[data-skin="mono"] .len button { width: 30px; height: 22px; }
+[data-skin="mono"] .len button { width: 28px; height: 28px; }
 [data-skin="mono"] .len span { min-width: 60px; }
-[data-skin="mono"] .tog { min-height: 22px; gap: 6px; }
+[data-skin="mono"] .tog { min-height: 28px; gap: 6px; }
 [data-skin="mono"] .tog:last-child { justify-self: end; }
 [data-skin="mono"] .tog input { width: 16px; height: 16px; }
-[data-skin="mono"] .tasks { padding: 22px 22px 16px; }
-[data-skin="mono"] .tasks .phead { min-height: 36px; margin-bottom: 12px; }
-[data-skin="mono"] .tasks h2 { font-size: 23px; font-weight: 500; letter-spacing: -.02em; }
+[data-skin="mono"] .tasks { padding: 26px 26px 20px; }
+[data-skin="mono"] .tasks .phead { min-height: 36px; margin-bottom: 16px; }
+[data-skin="mono"] .tasks h2 { font-size: 26px; font-weight: 500; letter-spacing: -.02em; }
 [data-skin="mono"] .headr { gap: 12px; }
 [data-skin="mono"] .count { font-size: 14px; }
-[data-skin="mono"] .sync { font-size: 11px; }
-[data-skin="mono"] .task { min-height: 62px; grid-template-columns: 40px minmax(0,1fr) auto 30px; }
+[data-skin="mono"] .sync { display: none; }
+[data-skin="mono"] .task { min-height: 68px; grid-template-columns: 40px minmax(0,1fr) auto 30px; }
 [data-skin="mono"] .chk { width: 40px; height: 48px; justify-items: start; }
-[data-skin="mono"] .chk i { width: 23px; height: 23px; border-color: var(--fg-3); }
-[data-skin="mono"] .ttext { min-height: 48px; font-size: 17px; }
+[data-skin="mono"] .chk i { width: 24px; height: 24px; border-color: var(--fg-3); }
+[data-skin="mono"] .ttext { min-height: 48px; font-size: 18px; }
 [data-skin="mono"] .del { width: 30px; height: 44px; }
-[data-skin="mono"] .addrow { border: 0; padding: 0; margin-top: 12px; gap: 10px; }
+[data-skin="mono"] .addrow { border: 0; padding: 0; margin-top: 16px; gap: 10px; }
 [data-skin="mono"] .addrow input { height: 44px; padding: 0 13px; border-radius: 13px; background: var(--panel-2); font-size: 17px; }
 [data-skin="mono"] .addrow input::placeholder { font-size: 13px; }
 [data-skin="mono"] .btn-solid { min-width: 56px; min-height: 44px; background: var(--panel-2); border-radius: 99px; font-size: 13px; }
-[data-skin="mono"] .tfoot { margin-top: 6px; font-size: 12px; }
+[data-skin="mono"] .tfoot { justify-content: flex-end; margin-top: 4px; font-size: 12px; }
+[data-skin="mono"] .tfoot > span { display: none; }
+[data-skin="mono"] .tfoot button:disabled { display: none; }
 [data-skin="mono"] .tfoot button { min-height: 30px; font-size: 12px; }
-[data-skin="mono"] .cal { display: flex; flex-direction: column; padding: 14px; }
-[data-skin="mono"] .cal .phead { flex-direction: row; align-items: center; justify-content: space-between; min-height: 32px; margin-bottom: 5px; }
-[data-skin="mono"] .cal-month { display: none; }
-[data-skin="mono"] .ctitle { display: block; font-size: 14px; font-weight: 500; }
+[data-skin="mono"] .cal { display: grid; grid-template-columns: 82px minmax(0,1fr); grid-template-rows: 18px minmax(0,1fr); gap: 4px 14px; padding: 0; background: transparent; box-shadow: none; border-radius: 0; }
+[data-skin="mono"] .cal .phead { flex-direction: column; align-items: flex-start; justify-content: space-between; min-height: 0; margin: 0; }
+[data-skin="mono"] .cal-month { display: flex; gap: 7px; }
+[data-skin="mono"] .cal-month b { font-size: 42px; font-weight: 400; color: var(--fg-2); }
+[data-skin="mono"] .cal-month small { font-size: 10px; letter-spacing: .04em; }
+[data-skin="mono"] .ctitle { display: none; }
 [data-skin="mono"] .calnav { flex-wrap: nowrap; }
-[data-skin="mono"] .calnav button { min-width: 28px; height: 32px; font-size: 11px; }
+[data-skin="mono"] .calnav button { min-width: 27px; height: 32px; font-size: 11px; }
 [data-skin="mono"] .calnav svg { width: 14px; height: 14px; }
-[data-skin="mono"] .dow { min-height: 17px; font-size: 11px; margin-bottom: 4px; }
+[data-skin="mono"] .dow { min-height: 17px; font-size: 11px; margin: 0; }
 [data-skin="mono"] .days { flex: 1; }
 [data-skin="mono"] .d { font-size: 14px; }
 [data-skin="mono"] .d.today { width: 21px; height: 21px; background: var(--mono-action); color: #25130e; }
-[data-skin="mono"] .milestones { padding: 14px 16px; }
-[data-skin="mono"] .milestones .phead { min-height: 32px; margin-bottom: 6px; }
-[data-skin="mono"] .milestones h2 { font-size: 14px; font-weight: 500; }
+[data-skin="mono"] .milestones { padding: 0; background: transparent; box-shadow: none; border-radius: 0; }
+[data-skin="mono"] .milestones .phead { min-height: 28px; margin-bottom: 8px; }
+[data-skin="mono"] .milestones h2 { font-size: 14px; font-weight: 400; color: var(--fg-3); }
 [data-skin="mono"] .milestone-add { min-height: 32px; height: 32px; padding: 0 2px; font-size: 12px; }
-[data-skin="mono"] .milestone-list { grid-template-columns: minmax(0,1fr); grid-auto-rows: 66px; gap: 5px; }
-[data-skin="mono"] .milestone-card { border-radius: 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; }
-[data-skin="mono"] .milestone-card:last-child { border-bottom: 0; }
-[data-skin="mono"] .milestone-edit { flex-direction: row; align-items: center; justify-content: space-between; padding: 7px 4px 7px 0; gap: 8px; }
-[data-skin="mono"] .milestone-info { padding: 0; gap: 4px; }
+[data-skin="mono"] .milestone-list { grid-template-columns: repeat(2,minmax(0,1fr)); grid-auto-rows: 112px; gap: 18px; }
+[data-skin="mono"] .milestone-card { border-radius: 0; border: 0; background: transparent; }
+[data-skin="mono"] .milestone-edit { flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 5px 0 3px; gap: 6px; }
+[data-skin="mono"] .milestone-info { padding-right: 28px; gap: 4px; }
 [data-skin="mono"] .milestone-name { font-size: 14px; font-weight: 400; }
 [data-skin="mono"] .milestone-date { font-size: 11px; }
-[data-skin="mono"] .milestone-value { flex-wrap: nowrap; gap: 3px; color: var(--fg); }
-[data-skin="mono"] .milestone-number { font-size: 32px; font-weight: 400; letter-spacing: -.03em; }
+[data-skin="mono"] .milestone-value { flex-wrap: nowrap; gap: 3px; color: var(--fg-2); }
+[data-skin="mono"] .milestone-number { font-size: 35px; font-weight: 400; letter-spacing: -.03em; }
 [data-skin="mono"] .milestone-unit { font-size: 11px; }
 [data-skin="mono"] .milestone-status { font-size: 16px; }
-[data-skin="mono"] .milestone-delete { position: static; width: 28px; min-height: 44px; font-size: 16px; align-self: center; }
-[data-skin="mono"] .milestone-empty { min-height: 66px; border: 0; border-radius: 14px; padding: 9px 10px; background: var(--panel-2); gap: 8px; }
+[data-skin="mono"] .milestone-delete { position: absolute; top: 0; right: 0; width: 28px; min-height: 44px; font-size: 16px; }
+[data-skin="mono"] .milestone-empty { min-height: 48px; align-self: start; border: 0; border-radius: 0; padding: 8px 0; background: transparent; gap: 8px; }
 [data-skin="mono"] .milestone-empty strong { font-size: 13px; font-weight: 400; margin-bottom: 3px; }
-[data-skin="mono"] .milestone-empty small { display: block; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-[data-skin="mono"] .milestone-empty b { display: block; color: var(--mono-action); font-size: 23px; }
-[data-skin="mono"] .focus-stats { display: flex; flex-direction: column; grid-area: stats; padding: 14px 16px; min-height: 0; }
+[data-skin="mono"] .milestone-empty small { display: none; }
+[data-skin="mono"] .milestone-empty b { display: block; color: var(--fg-3); font-size: 21px; }
+.stats-overlay { position: fixed; inset: 0; z-index: 120; display: flex; align-items: center; justify-content: flex-end; padding: 20px; background: #0005; }
+.stats-drawer { display: flex; flex-direction: column; width: min(440px,100%); height: 480px; max-height: calc(100vh - 40px); padding: 25px; border: 1px solid var(--line); border-radius: 26px; color: var(--fg); background: var(--panel); box-shadow: 0 20px 70px #0003; overflow-y: auto; }
+.stats-overlay .stats-drawer .phead { align-items: flex-start; margin-bottom: 20px; }
+.stats-overlay .stats-drawer h2 { font-size: 23px; line-height: 1.2; font-weight: 500; }
+.stats-drawer .stats-period { display: block; margin-top: 6px; font-size: 12px; }
+#focusStatsClose { display: flex; align-items: center; justify-content: center; gap: 3px; min-width: 64px; height: 44px; color: var(--fg-2); font-size: 13px; }
+#focusStatsClose svg { width: 18px; height: 18px; }
+.stats-drawer .stats-summary b { font-size: 52px; }
+.stats-drawer .stats-summary span { font-size: 13px; }
+.stats-drawer .stats-rounds b { font-size: 32px; }
+.stats-drawer .stats-chart-wrap { min-height: 140px; margin-top: 20px; }
+.stats-drawer .stats-chart { min-height: 140px; }
+.stats-drawer .stats-day > span { font-size: 12px; }
+.stats-drawer .stats-day-value { color: var(--fg-2); font-size: 12px; }
+.stats-chart[data-empty="true"] .stats-day-value { visibility: hidden; }
+.stats-drawer .stats-empty { top: 45%; font-size: 13px; }
+.stats-drawer .stats-footer { margin-top: 15px; font-size: 12px; }
+body.stats-modal-open { overflow: hidden; }
 .focus-stats .phead { min-height: 28px; margin-bottom: 4px; }
 .focus-stats h2 { font-size: 15px; font-weight: 500; }
 .stats-period { font-size: 11px; color: var(--fg-3); }
@@ -986,6 +1009,8 @@ ul { list-style: none; padding: 0; }
 .weather-meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .weather-meta > span { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .weather-meta small { display: block; font-size: 11px; color: var(--fg-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-skin="mono"] [data-weather-ready="false"] .weather-now b,
+[data-skin="mono"] [data-weather-ready="false"] .weather-meta small { display: none; }
 .weather-overlay { position: fixed; inset: 0; z-index: 110; padding: 20px; display: flex; align-items: center; justify-content: center; background: #0007; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
 .weather-dialog { width: min(100%,420px); max-height: calc(100vh - 40px); overflow-y: auto; padding: 22px; border: 1px solid var(--line); border-radius: 26px; background: var(--panel); color: var(--fg); box-shadow: 0 20px 80px #0003; }
 .weather-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -1015,8 +1040,8 @@ ul { list-style: none; padding: 0; }
 .weather-dialog-foot button { color: var(--fg-3); font-size: 11px; }
 body.weather-modal-open { overflow: hidden; }
 @media (min-width: 901px) and (max-height: 720px) {
-  [data-skin="mono"] .dash { min-height: 614px; grid-template-rows: 386px 212px; }
-  [data-skin="mono"] .pc { font-size: 112px; }
+  [data-skin="mono"] .dash { min-height: 620px; grid-template-rows: 438px 160px; }
+  [data-skin="mono"] .pc { font-size: 124px; }
 }
 @media (min-width: 901px) and (max-width: 980px) {
   [data-skin="mono"] .clock { left: 130px; right: 510px; }
@@ -1026,45 +1051,48 @@ body.weather-modal-open { overflow: hidden; }
   [data-skin="mono"] .weather-now b { font-size: 24px; }
   [data-skin="mono"] .weather-now svg { display: none; }
   [data-skin="mono"] .tool-btn { padding: 0 7px; }
-  [data-skin="mono"] .pomo { padding: 18px; }
-  [data-skin="mono"] .tasks { padding: 20px 18px 14px; }
-  [data-skin="mono"] .milestones { padding: 14px 12px; }
+  [data-skin="mono"] .pomo { padding: 22px; }
+  [data-skin="mono"] .tasks { padding: 22px 20px 18px; }
 }
 @media (max-width: 900px) {
-  [data-skin="mono"] .dash { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: auto; grid-template-areas: "clock weather" "pomo pomo" "tasks tasks" "cal milestones" "stats stats"; gap: 16px; }
-  [data-skin="mono"] .clock { position: static; display: flex; grid-area: clock; padding: 8px 0; gap: 0; }
+  [data-skin="mono"] .dash { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: auto; grid-template-areas: "clock weather" "pomo pomo" "tasks tasks" "cal milestones"; gap: 24px 20px; }
+  [data-skin="mono"] .clock { position: static; display: flex; flex-direction: column; align-items: flex-start; grid-area: clock; padding: 8px 0; gap: 0; }
   [data-skin="mono"] .time { font-size: 68px; }
   [data-skin="mono"] .time .sec { display: none; }
   [data-skin="mono"] .dateline { font-size: 17px; margin-top: 8px; }
-  [data-skin="mono"] .zone { font-size: 12px; margin-top: 8px; }
   [data-skin="mono"] .weekline { display: none; }
-  [data-skin="mono"] .weather { position: static; grid-area: weather; align-self: center; padding: 14px; background: var(--panel); border-radius: 22px; }
+  [data-skin="mono"] .weather { position: static; grid-area: weather; align-self: center; padding: 10px 0; background: transparent; }
   [data-skin="mono"] .weather-now b { font-size: 36px; }
   [data-skin="mono"] .weather-meta > span { font-size: 14px; }
   [data-skin="mono"] .weather-meta small { font-size: 12px; }
-  [data-skin="mono"] .pomo { min-height: 440px; }
+  [data-skin="mono"] .pomo { min-height: 470px; }
   [data-skin="mono"] .pc { font-size: clamp(112px,20vw,164px); }
-  [data-skin="mono"] .tasks { min-height: 390px; }
-  [data-skin="mono"] .cal { min-height: 240px; }
-  [data-skin="mono"] .milestones { min-height: 240px; }
-  [data-skin="mono"] .focus-stats { min-height: 220px; }
-  .stats-track { min-height: 60px; }
+  [data-skin="mono"] .tasks { min-height: 420px; }
+  [data-skin="mono"] .cal { min-height: 190px; grid-template-columns: 68px minmax(0,1fr); gap: 4px 10px; }
+  [data-skin="mono"] .calnav button { min-width: 22px; }
+  [data-skin="mono"] .milestones { min-height: 190px; }
+  [data-skin="mono"] .milestone-list { gap: 12px; }
 }
 @media (max-width: 600px) {
   [data-skin="mono"] body { padding: 16px; }
   [data-skin="mono"] .topbar { padding-bottom: 12px; gap: 8px; }
   [data-skin="mono"] .brand { font-size: 12px; }
   [data-skin="mono"] .top-actions { width: 100%; justify-content: space-between; }
-  [data-skin="mono"] .dash { grid-template-columns: minmax(0,1fr); grid-template-areas: "clock" "weather" "pomo" "tasks" "cal" "milestones" "stats"; }
+  [data-skin="mono"] .dash { grid-template-columns: minmax(0,1fr); grid-template-areas: "clock" "weather" "pomo" "tasks" "cal" "milestones"; }
   [data-skin="mono"] .time { font-size: 72px; }
-  [data-skin="mono"] .weather { padding: 14px 18px; }
-  [data-skin="mono"] .pomo { min-height: 470px; padding: 18px; grid-template-rows: 56px minmax(0,1fr) 100px 48px; }
-  [data-skin="mono"] .pomo-heading h2 { font-size: 32px; }
+  [data-skin="mono"] .weather { padding: 0; }
+  [data-skin="mono"] .pomo { min-height: 470px; padding: 18px; grid-template-rows: 44px minmax(0,1fr) auto 32px; }
+  [data-skin="mono"] .pomo-heading h2 { font-size: 24px; }
   [data-skin="mono"] .seg { gap: 4px; }
   [data-skin="mono"] .seg button { min-width: 35px; font-size: 12px; }
   [data-skin="mono"] .pc { font-size: clamp(78px,24vw,124px); }
   [data-skin="mono"] .pside { gap: 10px; }
   [data-skin="mono"] .ptarget { text-align: center; }
+  [data-skin="mono"] .pctl { gap: 2px; width: 100%; }
+  [data-skin="mono"] .pctl .go { min-width: 90px; padding: 0 16px; }
+  [data-skin="mono"] .pctl .ghost { min-width: 44px; padding: 0 9px; }
+  [data-skin="mono"] .pmeta { right: 18px; bottom: 62px; width: calc(100% - 36px); grid-template-columns: minmax(0,1fr); grid-template-rows: repeat(4,28px); }
+  [data-skin="mono"] .pmeta .len, [data-skin="mono"] .pmeta .tog:last-child { justify-self: start; }
   [data-skin="mono"] .tasks { padding: 18px 14px 12px; }
   [data-skin="mono"] .tasks h2 { font-size: 21px; }
   [data-skin="mono"] .sync { display: none; }
@@ -1073,8 +1101,11 @@ body.weather-modal-open { overflow: hidden; }
   [data-skin="mono"] .ttext { font-size: 16px; }
   [data-skin="mono"] .del { width: 28px; }
   [data-skin="mono"] .tfoot, [data-skin="mono"] .tfoot button { font-size: 11px; }
-  [data-skin="mono"] .milestones { min-height: 210px; }
-  [data-skin="mono"] .focus-stats { min-height: 230px; }
+  [data-skin="mono"] .milestones { min-height: 160px; }
+  .stats-overlay { padding: 12px; align-items: flex-end; }
+  .stats-drawer { width: 100%; padding: 20px; max-height: calc(100vh - 24px); }
+  .stats-drawer .stats-summary b { font-size: 44px; }
+  .stats-drawer .stats-rounds b { font-size: 28px; }
 }
 
 </style>
@@ -1207,7 +1238,11 @@ body.weather-modal-open { overflow: hidden; }
       </div>
 
     </div>
-      <div class="pmeta">
+      <div class="pomo-utility">
+        <button type="button" class="pomo-utility-button" id="focusStatsToggle" aria-expanded="false" aria-controls="focusStatsPanel" aria-haspopup="dialog"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 15V9m6 6V4m6 11V7"/></svg><span>专注统计</span></button>
+        <button type="button" class="pomo-utility-button" id="timerSettingsToggle" aria-expanded="false" aria-controls="pomoOptions"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M3 6h4m4 0h6M3 14h8m4 0h2"/><circle cx="9" cy="6" r="2"/><circle cx="13" cy="14" r="2"/></svg><span>计时设置</span></button>
+      </div>
+      <div class="pmeta" id="pomoOptions" role="group" aria-label="计时设置">
         <div class="p-rounds"><div class="dots" id="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         <span id="pCount">今日 0 轮</span></div>
         <span class="len">
@@ -1238,16 +1273,18 @@ body.weather-modal-open { overflow: hidden; }
     </div>
   </section>
   </div>
-  <section class="panel focus-stats" aria-labelledby="focusStatsHeading">
-    <div class="phead"><h2 id="focusStatsHeading">专注统计</h2><span class="stats-period">近 7 天</span></div>
+</main>
+
+</div>
+<div class="stats-overlay" id="focusStatsOverlay" hidden>
+  <section class="panel focus-stats stats-drawer" id="focusStatsPanel" role="dialog" aria-modal="true" aria-labelledby="focusStatsHeading" tabindex="-1">
+    <div class="phead"><div><h2 id="focusStatsHeading">专注统计</h2><span class="stats-period">近 7 天的完成记录</span></div><button type="button" id="focusStatsClose" aria-label="收起专注统计"><span>收起</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></button></div>
     <div class="stats-summary"><div><b id="focusTodayMinutes">0</b><span>分钟 / 今天</span></div><div class="stats-rounds"><b id="focusTodayRounds">0</b><span>轮</span></div></div>
     <div class="stats-chart-wrap"><div class="stats-chart" id="focusChart" role="img" aria-label="近七天暂无已完成的专注"></div><p class="stats-empty" id="focusStatsEmpty">完成第一轮，点亮本周记录</p></div>
     <div class="stats-footer"><span id="focusWeekTotal">7 天共 0 分钟</span><span id="focusStatsNote">完成一轮后计入</span></div>
   </section>
-
-</main>
-
 </div>
+
 <aside class="screen-tip" id="fullscreenTip" role="status" hidden>
   <strong>Safari 全屏显示</strong>
   <p id="fullscreenHelp"></p>
@@ -1502,15 +1539,58 @@ body.weather-modal-open { overflow: hidden; }
     setText('focusStatsNote', legacy ? '时长从本次更新起记录' : '完成一轮后计入');
     $('focusStatsEmpty').hidden = report.totalMinutes > 0;
     var chart = $('focusChart'); chart.textContent = '';
+    chart.setAttribute('data-empty', report.totalMinutes === 0 ? 'true' : 'false');
     chart.setAttribute('aria-label', report.days.map(function (d) { return d.day + '，' + d.minutes + ' 分钟，' + d.rounds + ' 轮'; }).join('；'));
     report.days.forEach(function (d) {
       var col = document.createElement('div'); col.className = 'stats-day' + (d.today ? ' is-today' : ''); col.setAttribute('aria-hidden','true');
+      var value = document.createElement('span'); value.className = 'stats-day-value'; value.textContent = d.minutes > 0 ? String(Math.round(d.minutes)) : '—';
       var track = document.createElement('div'); track.className = 'stats-track';
       var bar = document.createElement('i'); bar.style.height = (d.minutes / report.maxMinutes * 100) + '%'; track.appendChild(bar);
       var label = document.createElement('span'); label.textContent = d.today ? '今' : WD[d.weekday];
-      col.appendChild(track); col.appendChild(label); chart.appendChild(col);
+      col.appendChild(value); col.appendChild(track); col.appendChild(label); chart.appendChild(col);
     });
   }
+  var focusStatsReturnFocus = null, timerSettingsOpen = false;
+  function closeTimerSettings(restoreFocus) {
+    timerSettingsOpen = false;
+    $('pomo').classList.remove('settings-open');
+    $('timerSettingsToggle').setAttribute('aria-expanded','false');
+    if (restoreFocus && $('timerSettingsToggle').getClientRects().length) $('timerSettingsToggle').focus();
+  }
+  $('timerSettingsToggle').addEventListener('click',function () {
+    timerSettingsOpen = !timerSettingsOpen;
+    $('pomo').classList.toggle('settings-open',timerSettingsOpen);
+    this.setAttribute('aria-expanded',timerSettingsOpen ? 'true' : 'false');
+  });
+  document.addEventListener('click',function (ev) {
+    if (timerSettingsOpen && !$('pomoOptions').contains(ev.target) && !$('timerSettingsToggle').contains(ev.target)) closeTimerSettings(false);
+  });
+  document.addEventListener('keydown',function (ev) {
+    if (timerSettingsOpen && ev.key === 'Escape') { ev.preventDefault(); closeTimerSettings(true); }
+  });
+  $('skinSelect').addEventListener('change',function () { closeTimerSettings(false); });
+  function openFocusStats() {
+    closeTimerSettings(false);
+    focusStatsReturnFocus = document.activeElement;
+    renderFocusStats();
+    $('focusStatsOverlay').hidden = false;
+    $('focusStatsToggle').setAttribute('aria-expanded','true');
+    document.body.classList.add('stats-modal-open');
+    $('focusStatsClose').focus();
+  }
+  function closeFocusStats() {
+    $('focusStatsOverlay').hidden = true;
+    $('focusStatsToggle').setAttribute('aria-expanded','false');
+    document.body.classList.remove('stats-modal-open');
+    if (focusStatsReturnFocus && document.contains(focusStatsReturnFocus) && focusStatsReturnFocus.getClientRects().length) focusStatsReturnFocus.focus();
+  }
+  $('focusStatsToggle').addEventListener('click',openFocusStats);
+  $('focusStatsClose').addEventListener('click',closeFocusStats);
+  $('focusStatsOverlay').addEventListener('click',function (ev) { if (ev.target === this) closeFocusStats(); });
+  $('focusStatsOverlay').addEventListener('keydown',function (ev) {
+    if (ev.key === 'Escape') { ev.preventDefault(); ev.stopPropagation(); closeFocusStats(); }
+    if (ev.key === 'Tab') { ev.preventDefault(); $('focusStatsClose').focus(); }
+  });
   window.addEventListener('storage', function (ev) {
     if (ev.key === LS_FOCUS_LOG) {
       focusLog = FocusStatsCore.normalize(lsGet(LS_FOCUS_LOG));
@@ -1543,10 +1623,11 @@ body.weather-modal-open { overflow: hidden; }
     var description = d ? WeatherCore.describe(d.code, d.isDay) : { text:'', icon:'cloud' };
     var place = weatherLocationName();
     var stale = weatherCache && Date.now()-weatherCache.updatedAt > 40*60000;
-    setText('weatherPlace', place);
+    setText('weatherPlace', !d && weatherConfig.latitude === null ? '开启天气' : place);
     setText('weatherTemp', d ? weatherNumber(d.temperature)+'°' : '--°');
     setText('weatherBrief', weatherBusy ? '正在更新…' : (d ? description.text + (stale ? ' · 上次天气' : ' · ' + weatherNumber(d.high) + ' / ' + weatherNumber(d.low) + '°') : (weatherConfig.latitude === null ? '点此开启天气' : '天气暂不可用')));
     $('weatherCard').setAttribute('data-icon', description.icon);
+    $('weatherCard').setAttribute('data-weather-ready', d ? 'true' : 'false');
     $('weatherToggle').setAttribute('aria-label', d ? place + '，' + description.text + '，' + weatherNumber(d.temperature) + ' 摄氏度。打开天气设置' : '开启本地天气');
     $('weatherDetail').hidden = !d;
     $('weatherRefresh').hidden = weatherConfig.latitude === null;
